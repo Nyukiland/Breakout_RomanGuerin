@@ -5,6 +5,5 @@
 
 void ABKBrickYellow::InteractWithBall(ABKBall* Ball)
 {
-
-	ABKBrick::InteractWithBall(Ball);
+	Super::InteractWithBall(Ball);
 }

@@ -14,22 +14,19 @@ class BREAKOUT_ROMANGUERIN_API ABKBrick : public AActor
 	GENERATED_BODY()
 	
 protected: 
+	UPROPERTY(VisibleAnywhere, Category = "Brick")
+	UStaticMeshComponent* BrickVisual;
 	UPROPERTY(EditAnywhere, Category = "Brick")
-	int32 score;
+	int32 Score = 0;
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	bool SpawnOthers = false;
 
 public:	
-	// Sets default values for this actor's properties
-	ABKBrick();
+	virtual void InteractWithBall(ABKBall* Ball);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void InteractWithBall(ABKBall* Ball);
+	ABKBrick();
 
 };

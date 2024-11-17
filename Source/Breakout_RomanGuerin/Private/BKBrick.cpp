@@ -3,30 +3,32 @@
 
 #include "BKBrick.h"
 #include "BKBall.h"
+#include "BKManager.h"
 
-// Sets default values
+
 ABKBrick::ABKBrick()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	BrickVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallComponent"));
+	RootComponent = BrickVisual;
 
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (CubeAsset.Succeeded())
+	{
+		BrickVisual->SetStaticMesh(CubeAsset.Object);
+		BrickVisual->SetWorldScale3D(FVector(0.5f, 1, 1));
+	}
 }
 
 // Called when the game starts or when spawned
 void ABKBrick::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ABKBrick::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
 }
 
 void ABKBrick::InteractWithBall(ABKBall* Ball)
 {
+	ABKManager::Get()->Score += Score;
+	ABKManager::Get()->ObjectCollision.Remove(this);
 	Destroy();
 }

@@ -2,6 +2,8 @@
 
 
 #include "BKBall.h"
+#include "BKManager.h"
+#include "BKBrick.h"
 
 // Sets default values
 ABKBall::ABKBall()
@@ -10,27 +12,21 @@ ABKBall::ABKBall()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Direction = FVector(1, 0, 0);
-	CurrentSpeed = 10;
+	CurrentSpeed = BaseSpeed;
 	Radius = 1;
 
 	BallComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallComponent"));
 	RootComponent = BallComponent;
 
-	// Load a sphere mesh from the engine's default assets
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereAsset(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	if (SphereAsset.Succeeded())
 	{
 		BallComponent->SetStaticMesh(SphereAsset.Object);
 	}
 
-	// Optionally, set the material
-	static ConstructorHelpers::FObjectFinder<UMaterial> SphereMaterial(TEXT("/Game/StarterContent/Materials/M_Brick_Clay.M_Brick_Clay"));
-	if (SphereMaterial.Succeeded())
-	{
-		BallComponent->SetMaterial(0, SphereMaterial.Object);
-	}
-
-	BallComponent->SetSimulatePhysics(true);
+	//remove all physics system
+	BallComponent->SetSimulatePhysics(false);
+	BallComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned
@@ -38,15 +34,17 @@ void ABKBall::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Direction = FVector(1, 0, 0);
+	CurrentSpeed = BaseSpeed;
 }
 
 // Called every frame
 void ABKBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	MoveBall();
+
 	CollisionDetection(DeltaTime);
+	MoveBall(DeltaTime);
 }
 
 void ABKBall::AddSpeed(int32 Speed)
@@ -54,25 +52,47 @@ void ABKBall::AddSpeed(int32 Speed)
 	CurrentSpeed += Speed;
 }
 
-void ABKBall::MoveBall()
+void ABKBall::MoveBall(float DeltaTime)
 {
-	if (!BallComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("BallComponent is null in ABKBall::MoveBall!"));
-		return;  
-	}
-	BallComponent->SetPhysicsLinearVelocity(Direction * CurrentSpeed);
+	FVector Movement = Direction * CurrentSpeed * DeltaTime;
+	BallComponent->SetWorldLocation(BallComponent->GetComponentLocation() + Movement);
 }
 
 void ABKBall::CollisionDetection(float DeltaTime)
 {
-	FVector Start = GetActorLocation();
-	FVector End = Start + Direction * CurrentSpeed * DeltaTime;
+	FVector NormalCollision = FVector(0, 0, 0);
+	TArray<ABKBrick*> BricksCollided;
 
-	FHitResult HitResult;
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
+	FVector Location = BallComponent->GetComponentLocation() + (Direction * CurrentSpeed * DeltaTime);
 
-	bool bHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(Radius), QueryParams);
+	for (AActor* Actor : ABKManager::Get()->ObjectCollision)
+	{
+		if (!Actor) continue;
+
+		FBox ActorBounds = Actor->GetComponentsBoundingBox();
+		if (ActorBounds.IsInside(Location))
+		{
+			FVector ColDir = (Location - Actor->GetActorLocation()).GetSafeNormal();
+			//if (ColDir.X > ColDir.Y) ColDir.Y = 0;
+			//else ColDir.X = 0;
+			NormalCollision += ColDir;
+
+			if (ABKBrick* Brick = Cast<ABKBrick>(Actor)) BricksCollided.Add(Brick);
+		}
+	}
+
+	for (int32 i = BricksCollided.Num() - 1; i >= 0; i--)
+	{
+		if (BricksCollided[i])
+		{
+			BricksCollided[i]->InteractWithBall(this);
+		}
+	}
+
+	if (NormalCollision.SizeSquared() > 0)
+	{
+		NormalCollision.Normalize();
+		Direction = Direction.MirrorByVector(NormalCollision);
+	}
 }
 

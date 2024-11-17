@@ -10,8 +10,7 @@ UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKBrickYellow : public ABKBrick
 {
 	GENERATED_BODY()
-	
-public:
 
+public:
 	virtual void InteractWithBall(ABKBall* Ball) override;
 };

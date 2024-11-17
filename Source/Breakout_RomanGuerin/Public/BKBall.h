@@ -14,28 +14,24 @@ class BREAKOUT_ROMANGUERIN_API ABKBall : public AActor
 	
 private:
 
-	float CurrentSpeed;
-	FVector Direction;
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	float BaseSpeed = 50;
+	float CurrentSpeed;	
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	FVector Direction = FVector(1,0,0);
 	UPROPERTY(EditAnywhere, Category = "Ball")
 	float Radius;
 	UPROPERTY(VisibleAnywhere, Category = "Ball")
 	UStaticMeshComponent* BallComponent;
 
 public:	
-	// Sets default values for this actor's properties
-	ABKBall();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	void AddSpeed(int32 Speed);
 
 private:
-	void MoveBall();
+	ABKBall();
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	void MoveBall(float DeltaTime);
 	void CollisionDetection(float DeltaTime);
 
 };
