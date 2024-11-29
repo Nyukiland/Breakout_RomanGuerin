@@ -1,4 +1,6 @@
 #include "BKManager.h"
+#include "BKManager.h"
+#include "BKManager.h"
 #include "BKBrick.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -31,26 +33,30 @@ void ABKManager::BeginPlay()
 
 	Instance = this;
 
+	PrepTile();
+}
+
+void ABKManager::PrepTile()
+{
 	GenerateTile(YellowBrick);
 }
 
-void ABKManager::GenerateTile(ABKBrick* Brick)
+void ABKManager::GenerateTile(TSubclassOf<ABKBrick> Brick)
 {
-	FVector Position = Brick->GetActorLocation();
-	TSubclassOf<ABKBrick> BrickClass = Brick->GetClass();
+	FVector Position = SpawnPos;
 
 	for (int i = 0; i <= BrickPerLine; i++)
 	{
 		if (i == 0) continue;
 
-		Spawn(BrickClass, Position + FVector(0, 105 * i, 0));
+		Spawn(Brick, Position + FVector(0, 105 * i, 0));
 	}
 
 	Position += FVector(55, 0, 0);
 
 	for (int i = 0; i <= BrickPerLine; i++)
 	{
-		Spawn(BrickClass, Position + FVector(0, 105 * i, 0));
+		Spawn(Brick, Position + FVector(0, 105 * i, 0));
 	}
 }
 
@@ -58,4 +64,38 @@ void ABKManager::Spawn(TSubclassOf<ABKBrick> Brick, FVector Position)
 {
 	AActor* ActorSpawned = GetWorld()->SpawnActor<ABKBrick>(Brick, Position, FRotator(0, 0, 0));
 		ObjectCollision.Add(ActorSpawned);
+}
+
+void ABKManager::EndGame()
+{
+
+}
+
+void ABKManager::RemoveFromObjectCollision(ABKBrick* Brick)
+{
+	if (!ObjectCollision.Contains(Brick)) return;
+
+	ObjectCollision.Remove(Brick);
+	CheckForBrickLeft();
+}
+
+void ABKManager::CheckForBrickLeft()
+{
+	for (AActor* Actor : ObjectCollision)
+	{
+		if (Actor && Actor->IsA<ABKBrick>()) 
+		{
+			return;
+		}
+	}
+	
+	if (!Phase2)
+	{
+		GenerateTile(YellowBrick);
+		Phase2 = true;
+	}
+	else
+	{
+		EndGame();
+	}
 }

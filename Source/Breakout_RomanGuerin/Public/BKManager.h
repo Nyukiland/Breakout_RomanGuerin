@@ -29,15 +29,22 @@ private:
 	int32 BrickPerLine = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Control")
-	ABKBrick* YellowBrick;
+	FVector SpawnPos = FVector(0,0,0);
 
+	UPROPERTY(EditAnywhere, Category = "Control")
+	TSubclassOf<ABKBrick> YellowBrick;
+
+	bool Phase2 = false;
 
 public:
-	void GenerateTile(ABKBrick* Brick);
-	void EndGame();
+	void RemoveFromObjectCollision(ABKBrick* Brick);
 
 private:
 	virtual void BeginPlay() override;
+	void PrepTile();
+	void GenerateTile(TSubclassOf<ABKBrick> Brick);
 	void Spawn(TSubclassOf<ABKBrick> Brick, FVector Position);
+	void CheckForBrickLeft();
+	void EndGame();
 
 };

@@ -15,7 +15,7 @@ ABKBrick::ABKBrick()
 	if (CubeAsset.Succeeded())
 	{
 		BrickVisual->SetStaticMesh(CubeAsset.Object);
-		BrickVisual->SetWorldScale3D(FVector(0.5f, 1, 1));
+		BrickVisual->SetWorldScale3D(FVector(0.5f, 2, 1));
 	}
 }
 
@@ -29,6 +29,6 @@ void ABKBrick::BeginPlay()
 void ABKBrick::InteractWithBall(ABKBall* Ball)
 {
 	ABKManager::Get()->Score += Score;
-	ABKManager::Get()->ObjectCollision.Remove(this);
+	ABKManager::Get()->RemoveFromObjectCollision(this);
 	Destroy();
 }
