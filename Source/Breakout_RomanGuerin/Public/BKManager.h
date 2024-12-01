@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BKBrick.h"
 #include "BKManager.generated.h"
 
-class ABKBrick;
 
 UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKManager : public AActor
@@ -25,6 +25,8 @@ public:
 private:
 	static ABKManager* Instance;
 
+	int32 Life = 3;
+
 	UPROPERTY(EditAnywhere, Category = "Control")
 	int32 BrickPerLine = 5;
 
@@ -38,6 +40,8 @@ private:
 
 public:
 	void RemoveFromObjectCollision(ABKBrick* Brick);
+	void DeathZoneHit();
+	void RegisterInObjectCollision(AActor* Actor);
 
 private:
 	virtual void BeginPlay() override;
@@ -46,5 +50,6 @@ private:
 	void Spawn(TSubclassOf<ABKBrick> Brick, FVector Position);
 	void CheckForBrickLeft();
 	void EndGame();
+	void ResetBallPosition();
 
 };

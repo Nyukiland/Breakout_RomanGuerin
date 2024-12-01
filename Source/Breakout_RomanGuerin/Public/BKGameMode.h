@@ -6,8 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "BKGameMode.generated.h"
 
-class ABKBrick;
-
 UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKGameMode : public AGameModeBase
 {

@@ -1,8 +1,7 @@
 #include "BKManager.h"
-#include "BKManager.h"
-#include "BKManager.h"
 #include "BKBrick.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/WorldSettings.h"
 
 ABKManager* ABKManager::Instance = nullptr;
 
@@ -63,10 +62,15 @@ void ABKManager::GenerateTile(TSubclassOf<ABKBrick> Brick)
 void ABKManager::Spawn(TSubclassOf<ABKBrick> Brick, FVector Position)
 {
 	AActor* ActorSpawned = GetWorld()->SpawnActor<ABKBrick>(Brick, Position, FRotator(0, 0, 0));
-		ObjectCollision.Add(ActorSpawned);
+	RegisterInObjectCollision(ActorSpawned);
 }
 
 void ABKManager::EndGame()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
+}
+
+void ABKManager::ResetBallPosition()
 {
 
 }
@@ -77,6 +81,23 @@ void ABKManager::RemoveFromObjectCollision(ABKBrick* Brick)
 
 	ObjectCollision.Remove(Brick);
 	CheckForBrickLeft();
+}
+
+void ABKManager::RegisterInObjectCollision(AActor* Actor)
+{
+	ObjectCollision.Add(Actor);
+}
+
+void ABKManager::DeathZoneHit()
+{
+	if (Life <= 0)
+	{
+		EndGame();
+		return;
+	}
+
+	Life--;
+	ResetBallPosition();
 }
 
 void ABKManager::CheckForBrickLeft()
@@ -91,6 +112,7 @@ void ABKManager::CheckForBrickLeft()
 	
 	if (!Phase2)
 	{
+		ResetBallPosition();
 		GenerateTile(YellowBrick);
 		Phase2 = true;
 	}

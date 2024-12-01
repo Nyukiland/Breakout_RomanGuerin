@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BKBall.h"
 #include "BKBrick.generated.h"
 
-class ABKBall;
 
 UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKBrick : public AActor
