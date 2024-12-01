@@ -42,7 +42,7 @@ void ABKManager::PrepTile()
 
 void ABKManager::GenerateTile(TSubclassOf<ABKBrick> Brick)
 {
-	FVector Position = SpawnPos;
+	FVector Position = GetActorLocation() - (FVector(0, 105 * (BrickPerLine)/2, 0));
 
 	for (int i = 0; i <= BrickPerLine; i++)
 	{

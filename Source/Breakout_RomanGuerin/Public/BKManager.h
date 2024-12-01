@@ -31,9 +31,6 @@ private:
 	int32 BrickPerLine = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Control")
-	FVector SpawnPos = FVector(0,0,0);
-
-	UPROPERTY(EditAnywhere, Category = "Control")
 	TSubclassOf<ABKBrick> YellowBrick;
 
 	bool Phase2 = false;
