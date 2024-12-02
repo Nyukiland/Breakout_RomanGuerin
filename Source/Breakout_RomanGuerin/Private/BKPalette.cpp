@@ -4,6 +4,7 @@
 #include "BKPalette.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
 #include "BKManager.h"
 
 // Sets default values

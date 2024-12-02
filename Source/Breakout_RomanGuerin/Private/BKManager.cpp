@@ -1,8 +1,8 @@
 #include "BKManager.h"
 #include "BKBrick.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/WorldSettings.h"
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
 
 ABKManager* ABKManager::Instance = nullptr;
 
@@ -126,7 +126,7 @@ void ABKManager::CheckForBrickLeft()
 	if (!Phase2)
 	{
 		ResetBallPosition();
-		GenerateTile(YellowBrick);
+		PrepTile();
 		Phase2 = true;
 	}
 	else

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Blueprint/UserWidget.h"
 #include "BKManager.generated.h"
 
 class ABKBrick;
-class UUserWidget;
 
 UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKManager : public AActor

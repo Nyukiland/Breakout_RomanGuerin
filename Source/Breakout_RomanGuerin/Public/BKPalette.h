@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "InputActionValue.h"
 #include "BKPalette.generated.h"
 
-class InputActionValue;
 class UInputMappingContext;
 class UInputAction;
 
