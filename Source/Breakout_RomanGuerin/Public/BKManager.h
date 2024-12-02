@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BKBrick.h"
 #include "BKManager.generated.h"
 
+class ABKBrick;
+class UUserWidget;
 
 UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKManager : public AActor
@@ -21,11 +22,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Control")
 	TArray<AActor*> ObjectCollision;
 
+	int32 Life = 3;
 
 private:
-	static ABKManager* Instance;
 
-	int32 Life = 3;
+	UPROPERTY(EditAnywhere, Category = "Control")
+	FVector BrickOffset = FVector(110, 60, 0);
 
 	UPROPERTY(EditAnywhere, Category = "Control")
 	int32 BrickPerLine = 5;
@@ -33,7 +35,21 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Control")
 	TSubclassOf<ABKBrick> YellowBrick;
 
+	UPROPERTY(EditAnywhere, Category = "Control")
+	TSubclassOf<ABKBrick> GreenBrick;
+
+	UPROPERTY(EditAnywhere, Category = "Control")
+	TSubclassOf<ABKBrick> OrangeBrick;
+
+	UPROPERTY(EditAnywhere, Category = "Control")
+	TSubclassOf<ABKBrick> RedBrick;
+
+	UPROPERTY(EditAnywhere, Category = "Control")
+	TSubclassOf<UUserWidget> MainUIClass;
+
 	bool Phase2 = false;
+	static ABKManager* Instance;
+	UUserWidget* MainUI;
 
 public:
 	void RemoveFromObjectCollision(ABKBrick* Brick);
@@ -43,7 +59,7 @@ public:
 private:
 	virtual void BeginPlay() override;
 	void PrepTile();
-	void GenerateTile(TSubclassOf<ABKBrick> Brick);
+	void GenerateTile(TSubclassOf<ABKBrick> Brick, FVector Position);
 	void Spawn(TSubclassOf<ABKBrick> Brick, FVector Position);
 	void CheckForBrickLeft();
 	void EndGame();

@@ -2,6 +2,7 @@
 #include "BKBrick.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/WorldSettings.h"
+#include "Blueprint/UserWidget.h"
 
 ABKManager* ABKManager::Instance = nullptr;
 
@@ -32,30 +33,42 @@ void ABKManager::BeginPlay()
 
 	Instance = this;
 
+	MainUI = CreateWidget<UUserWidget>(GetWorld(), MainUIClass);
+	if (MainUI) MainUI->AddToViewport();
+
 	PrepTile();
 }
 
 void ABKManager::PrepTile()
 {
-	GenerateTile(YellowBrick);
+	FVector Position = GetActorLocation() - (FVector(0, 105 * (BrickPerLine)/2, 0));
+	GenerateTile(YellowBrick, Position);
+
+	Position += FVector(BrickOffset.X * 3, 0, 0);
+	GenerateTile(GreenBrick, Position);
+	
+	Position += FVector(BrickOffset.X * 3, 0, 0);
+	GenerateTile(OrangeBrick, Position);
+	
+	Position += FVector(BrickOffset.X * 3, 0, 0);
+	GenerateTile(RedBrick, Position);
 }
 
-void ABKManager::GenerateTile(TSubclassOf<ABKBrick> Brick)
+void ABKManager::GenerateTile(TSubclassOf<ABKBrick> Brick, FVector Position)
 {
-	FVector Position = GetActorLocation() - (FVector(0, 105 * (BrickPerLine)/2, 0));
 
 	for (int i = 0; i <= BrickPerLine; i++)
 	{
 		if (i == 0) continue;
 
-		Spawn(Brick, Position + FVector(0, 105 * i, 0));
+		Spawn(Brick, Position + FVector(0, BrickOffset.Y * i, 0));
 	}
 
-	Position += FVector(55, 0, 0);
+	Position += FVector(BrickOffset.X, 0, 0);
 
 	for (int i = 0; i <= BrickPerLine; i++)
 	{
-		Spawn(Brick, Position + FVector(0, 105 * i, 0));
+		Spawn(Brick, Position + FVector(0, BrickOffset.Y * i, 0));
 	}
 }
 
