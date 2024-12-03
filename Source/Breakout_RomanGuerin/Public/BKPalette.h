@@ -20,15 +20,17 @@ private:
 	UStaticMeshComponent* Visu;
 
 	UPROPERTY(EditAnywhere, Category = "Paddle")
-	float Speed;
+	float Speed = 1;
 
-	float MoveValue;
+	float MoveValue = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> IA_Move;
+
+	FVector StartPos = FVector(0, 0, 0);
 
 private:
 	void MoveInput(const FInputActionValue& Value);
@@ -42,6 +44,8 @@ public:
 	ABKPalette();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void ResetPos();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

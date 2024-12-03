@@ -24,8 +24,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Ball")
 	UStaticMeshComponent* BallComponent;
 
+	FVector StartPos = FVector(0, 0, 0);
+
 public:	
 	void AddSpeed(int32 Speed);
+	void ResetPos();
 
 private:
 	ABKBall();

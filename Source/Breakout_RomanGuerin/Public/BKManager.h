@@ -8,6 +8,8 @@
 #include "BKManager.generated.h"
 
 class ABKBrick;
+class ABKBall;
+class ABKPalette;
 
 UCLASS()
 class BREAKOUT_ROMANGUERIN_API ABKManager : public AActor
@@ -17,17 +19,19 @@ class BREAKOUT_ROMANGUERIN_API ABKManager : public AActor
 public:
 	static ABKManager* Get();
 
-	int32 Score;
-
 	UPROPERTY(EditAnywhere, Category = "Control")
 	TArray<AActor*> ObjectCollision;
 
+	int32 Score;
 	int32 Life = 3;
 
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Control")
 	FVector BrickOffset = FVector(110, 60, 0);
+
+	UPROPERTY(EditAnywhere, Category = "Control")
+	float OffsetLine = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Control")
 	int32 BrickPerLine = 5;
@@ -50,11 +54,19 @@ private:
 	bool Phase2 = false;
 	static ABKManager* Instance;
 	UUserWidget* MainUI;
+	ABKBall* CurrentBall;
+	ABKPalette* CurrentPaddle;
 
 public:
+	void RegisterBall(ABKBall* Ball);
+	void RegisterPaddle(ABKPalette* Paddle);
 	void RemoveFromObjectCollision(ABKBrick* Brick);
 	void DeathZoneHit();
 	void RegisterInObjectCollision(AActor* Actor);
+	UFUNCTION(BlueprintCallable, Category = "Control")
+	int32 GetScore();
+	UFUNCTION(BlueprintCallable, Category = "Control")
+	int32 GetLife();
 
 private:
 	virtual void BeginPlay() override;

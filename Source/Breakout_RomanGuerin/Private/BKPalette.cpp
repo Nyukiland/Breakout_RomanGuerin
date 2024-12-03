@@ -13,6 +13,10 @@ ABKPalette::ABKPalette()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	StartPos = FVector(0, 0, 0);
+	MoveValue = 0;
+	Speed = 1;
+
 	Visu = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallComponent"));
 	RootComponent = Visu;
 
@@ -32,6 +36,10 @@ void ABKPalette::BeginPlay()
 {
 	Super::BeginPlay();
 	ABKManager::Get()->RegisterInObjectCollision(this);
+
+	StartPos = Visu->GetComponentLocation();
+
+	ABKManager::Get()->RegisterPaddle(this);
 }
 
 // Called every frame
@@ -40,6 +48,11 @@ void ABKPalette::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Move(DeltaTime);
+}
+
+void ABKPalette::ResetPos()
+{
+	Visu->SetWorldLocation(StartPos);
 }
 
 // Called to bind functionality to input

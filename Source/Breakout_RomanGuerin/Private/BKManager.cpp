@@ -1,5 +1,7 @@
 #include "BKManager.h"
 #include "BKBrick.h"
+#include "BKBall.h"
+#include "BKPalette.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
@@ -44,29 +46,27 @@ void ABKManager::PrepTile()
 	FVector Position = GetActorLocation() - (FVector(0, 105 * (BrickPerLine)/2, 0));
 	GenerateTile(YellowBrick, Position);
 
-	Position += FVector(BrickOffset.X * 3, 0, 0);
+	Position += FVector(OffsetLine + BrickOffset.X, 0, 0);
 	GenerateTile(GreenBrick, Position);
 	
-	Position += FVector(BrickOffset.X * 3, 0, 0);
+	Position += FVector(OffsetLine + BrickOffset.X, 0, 0);
 	GenerateTile(OrangeBrick, Position);
 	
-	Position += FVector(BrickOffset.X * 3, 0, 0);
+	Position += FVector(OffsetLine + BrickOffset.X, 0, 0);
 	GenerateTile(RedBrick, Position);
 }
 
 void ABKManager::GenerateTile(TSubclassOf<ABKBrick> Brick, FVector Position)
 {
 
-	for (int i = 0; i <= BrickPerLine; i++)
+	for (int i = 0; i < BrickPerLine; i++)
 	{
-		if (i == 0) continue;
-
 		Spawn(Brick, Position + FVector(0, BrickOffset.Y * i, 0));
 	}
 
 	Position += FVector(BrickOffset.X, 0, 0);
 
-	for (int i = 0; i <= BrickPerLine; i++)
+	for (int i = 0; i < BrickPerLine; i++)
 	{
 		Spawn(Brick, Position + FVector(0, BrickOffset.Y * i, 0));
 	}
@@ -85,7 +85,19 @@ void ABKManager::EndGame()
 
 void ABKManager::ResetBallPosition()
 {
+	return; //Temporary to prevent a crash
+	if (CurrentBall) CurrentBall->ResetPos();
+	if (CurrentPaddle) CurrentPaddle->ResetPos();
+}
 
+void ABKManager::RegisterBall(ABKBall* Ball)
+{
+	CurrentBall = Ball;
+}
+
+void ABKManager::RegisterPaddle(ABKPalette* Paddle)
+{
+	CurrentPaddle = Paddle;
 }
 
 void ABKManager::RemoveFromObjectCollision(ABKBrick* Brick)
@@ -99,6 +111,16 @@ void ABKManager::RemoveFromObjectCollision(ABKBrick* Brick)
 void ABKManager::RegisterInObjectCollision(AActor* Actor)
 {
 	ObjectCollision.Add(Actor);
+}
+
+int32 ABKManager::GetScore()
+{
+	return Score;
+}
+
+int32 ABKManager::GetLife()
+{
+	return Life;
 }
 
 void ABKManager::DeathZoneHit()
