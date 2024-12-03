@@ -8,7 +8,7 @@
 // Sets default values
 ABKBall::ABKBall()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Direction = FVector(1, 0, 0);
@@ -33,7 +33,7 @@ ABKBall::ABKBall()
 void ABKBall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	Direction = FVector(1, 0, 0);
 	CurrentSpeed = BaseSpeed;
 }
@@ -60,39 +60,62 @@ void ABKBall::MoveBall(float DeltaTime)
 
 void ABKBall::CollisionDetection(float DeltaTime)
 {
-	FVector NormalCollision = FVector(0, 0, 0);
-	TArray<ABKBrick*> BricksCollided;
+	FVector NormalCollision = FVector::ZeroVector;
+	TArray<AActor*> Collided;
 
-	FVector Location = BallComponent->GetComponentLocation() + (Direction * CurrentSpeed * DeltaTime);
+	// Starting and ending positions of the ball
+	FVector StartPosition = BallComponent->GetComponentLocation();
+	FVector EndPosition = StartPosition + (Direction * CurrentSpeed * DeltaTime);
 
-	for (AActor* Actor : ABKManager::Get()->ObjectCollision)
+	// Number of steps for interpolating along the movement path
+	const int32 NumSteps = 10; // Higher = more precision
+	const float StepSize = 1.0f / NumSteps;
+
+	// Iterate through interpolated positions along the movement path
+	for (int32 Step = 0; Step <= NumSteps; Step++)
 	{
-		if (!Actor) continue;
+		// Calculate the current position based on interpolation
+		FVector CurrentPosition = FMath::Lerp(StartPosition, EndPosition, Step * StepSize);
 
-		FBox ActorBounds = Actor->GetComponentsBoundingBox();
-		if (ActorBounds.IsInside(Location))
+		// Recalculate the ball's bounding box for this position
+		FBox BallBounds = FBox(CurrentPosition - FVector(Radius), CurrentPosition + FVector(Radius));
+
+		// Check for collisions with each actor
+		for (AActor* Actor : ABKManager::Get()->ObjectCollision)
 		{
-			FVector ColDir = (Location - Actor->GetActorLocation()).GetSafeNormal();
-			//if (ColDir.X > ColDir.Y) ColDir.Y = 0;
-			//else ColDir.X = 0;
-			NormalCollision += ColDir;
+			if (!Actor) continue;
 
-			if (ABKBrick* Brick = Cast<ABKBrick>(Actor)) BricksCollided.Add(Brick);
+			// Get the actor's bounding box
+			FBox ActorBounds = Actor->GetComponentsBoundingBox();
+
+			// Check if the ball's bounding box intersects with the actor's bounding box
+			if (ActorBounds.Intersect(BallBounds))
+			{
+				// Collision detected: calculate the collision normal
+				FVector ClosestPoint = ActorBounds.GetClosestPointTo(CurrentPosition);
+				FVector ColDir = (CurrentPosition - ClosestPoint).GetSafeNormal();
+				NormalCollision += ColDir;
+
+				Collided.Add(Actor);
+			}
 		}
+
+		if (NormalCollision != FVector(0, 0, 0)) break;
 	}
 
-	for (int32 i = BricksCollided.Num() - 1; i >= 0; i--)
-	{
-		if (BricksCollided[i])
-		{
-			BricksCollided[i]->InteractWithBall(this);
-		}
-	}
-
+	// Reflect the direction based on accumulated collision normal
 	if (NormalCollision.SizeSquared() > 0)
 	{
 		NormalCollision.Normalize();
 		Direction = Direction.MirrorByVector(NormalCollision);
 	}
-}
 
+	// Handle brick-specific behavior
+	for (AActor* Actor : Collided)
+	{
+		if (ABKBrick* Brick = Cast<ABKBrick>(Actor))
+		{
+			Brick->InteractWithBall(this);
+		}
+	}
+}
