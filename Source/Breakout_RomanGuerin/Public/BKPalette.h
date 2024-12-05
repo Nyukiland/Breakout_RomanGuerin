@@ -32,7 +32,7 @@ private:
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> IA_Move;
+	TObjectPtr<UInputAction> IAMove;
 
 	FVector StartPos = FVector(0, 0, 0);
 

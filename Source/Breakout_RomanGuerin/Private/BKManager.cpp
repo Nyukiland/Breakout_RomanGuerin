@@ -43,7 +43,7 @@ void ABKManager::BeginPlay()
 
 void ABKManager::PrepTile()
 {
-	FVector Position = FVector(0, -105 * (BrickPerLine)/2, 0);
+	FVector Position = SpawnPosition;
 	GenerateTile(YellowBrick, Position);
 
 	Position += FVector((OffsetLine*2) + BrickOffset.X, 0, 0);

@@ -57,8 +57,12 @@ void ABKPalette::ResetPos()
 
 FBox ABKPalette::GetVisuBound()
 {
-	//return Visu->GetComponentsBoundingBox();
-	return FBox();
+	FBoxSphereBounds LocalBounds = Visu->GetStaticMesh()->GetBounds();
+
+	FTransform ComponentTransform = Visu->GetComponentTransform();
+	FBox WorldBounds = LocalBounds.GetBox().TransformBy(ComponentTransform);
+
+	return WorldBounds;
 }
 
 // Called to bind functionality to input
@@ -68,10 +72,10 @@ void ABKPalette::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		if (IA_Move)
+		if (IAMove)
 		{
-			EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ABKPalette::MoveInput);
-			EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &ABKPalette::StopInput);
+			EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Triggered, this, &ABKPalette::MoveInput);
+			EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Completed, this, &ABKPalette::StopInput);
 		}
 	}
 }

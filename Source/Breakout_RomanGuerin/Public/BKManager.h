@@ -29,6 +29,9 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Control")
+	FVector SpawnPosition = FVector(-100, 0, 0);
+
+	UPROPERTY(EditAnywhere, Category = "Control")
 	FVector BrickOffset = FVector(110, 60, 0);
 
 	UPROPERTY(EditAnywhere, Category = "Control")

@@ -93,6 +93,7 @@ void ABKBall::CollisionDetection(float DeltaTime)
 			if (!Actor) continue;
 
 			FBox ActorBounds = Actor->GetComponentsBoundingBox();
+			if (ABKPalette* Paddle = Cast<ABKPalette>(Actor)) ActorBounds = Paddle->GetVisuBound();
 
 			if (ActorBounds.Intersect(BallBounds))
 			{
