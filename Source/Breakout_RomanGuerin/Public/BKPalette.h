@@ -27,7 +27,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Paddle")
 	float MinPos = 1;
 
-	float MoveValue = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
@@ -36,6 +35,11 @@ private:
 	TObjectPtr<UInputAction> IA_Move;
 
 	FVector StartPos = FVector(0, 0, 0);
+
+public:
+
+	float MoveValue = 0;
+
 
 private:
 	void MoveInput(const FInputActionValue& Value);
@@ -52,6 +56,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void ResetPos();
+	FBox GetVisuBound();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

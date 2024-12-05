@@ -2,6 +2,7 @@
 
 
 #include "BKBall.h"
+#include "BKPalette.h"
 #include "BKManager.h"
 #include "BKBrick.h"
 
@@ -96,6 +97,7 @@ void ABKBall::CollisionDetection(float DeltaTime)
 			if (ActorBounds.Intersect(BallBounds))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Debug Message: Current Collision is %s"), *Actor->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("Debug Message: Actor %s is at location %s"), *Actor->GetName(), *Actor->GetActorLocation().ToString());
 
 				FVector ClosestPoint = ActorBounds.GetClosestPointTo(CurrentPosition);
 				FVector ColDir = (CurrentPosition - ClosestPoint).GetSafeNormal();
@@ -119,6 +121,11 @@ void ABKBall::CollisionDetection(float DeltaTime)
 		if (ABKBrick* Brick = Cast<ABKBrick>(Collided[i]))
 		{
 			Brick->InteractWithBall(this);
+		}
+		else if (ABKPalette* Paddle = Cast<ABKPalette>(Collided[i]))
+		{
+			Direction += FVector(0, Paddle->MoveValue, 0);
+			Direction.Normalize();
 		}
 	}
 }

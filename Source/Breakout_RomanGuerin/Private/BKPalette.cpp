@@ -55,6 +55,12 @@ void ABKPalette::ResetPos()
 	Visu->SetWorldLocation(StartPos);
 }
 
+FBox ABKPalette::GetVisuBound()
+{
+	//return Visu->GetComponentsBoundingBox();
+	return FBox();
+}
+
 // Called to bind functionality to input
 void ABKPalette::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

@@ -43,16 +43,16 @@ void ABKManager::BeginPlay()
 
 void ABKManager::PrepTile()
 {
-	FVector Position = GetActorLocation() - (FVector(0, 105 * (BrickPerLine)/2, 0));
+	FVector Position = FVector(0, -105 * (BrickPerLine)/2, 0);
 	GenerateTile(YellowBrick, Position);
 
-	Position += FVector(OffsetLine + BrickOffset.X, 0, 0);
+	Position += FVector((OffsetLine*2) + BrickOffset.X, 0, 0);
 	GenerateTile(GreenBrick, Position);
 	
-	Position += FVector(OffsetLine + BrickOffset.X, 0, 0);
+	Position += FVector((OffsetLine*2) + BrickOffset.X, 0, 0);
 	GenerateTile(OrangeBrick, Position);
 	
-	Position += FVector(OffsetLine + BrickOffset.X, 0, 0);
+	Position += FVector((OffsetLine*2) + BrickOffset.X, 0, 0);
 	GenerateTile(RedBrick, Position);
 }
 

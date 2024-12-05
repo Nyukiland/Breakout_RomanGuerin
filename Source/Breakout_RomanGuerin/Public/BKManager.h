@@ -23,6 +23,7 @@ public:
 	TArray<AActor*> ObjectCollision;
 
 	int32 Score;
+	UPROPERTY(VisibleAnywhere, Category = "Control")
 	int32 Life = 3;
 
 private:
