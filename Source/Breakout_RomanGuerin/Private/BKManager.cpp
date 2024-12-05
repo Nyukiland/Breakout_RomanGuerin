@@ -86,8 +86,8 @@ void ABKManager::EndGame()
 void ABKManager::ResetBallPosition()
 {
 	return; //Temporary to prevent a crash
-	if (CurrentBall) CurrentBall->ResetPos();
-	if (CurrentPaddle) CurrentPaddle->ResetPos();
+	/*if (CurrentBall) CurrentBall->ResetPos();
+	if (CurrentPaddle) CurrentPaddle->ResetPos();*/
 }
 
 void ABKManager::RegisterBall(ABKBall* Ball)

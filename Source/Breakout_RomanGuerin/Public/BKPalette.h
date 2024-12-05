@@ -22,6 +22,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Paddle")
 	float Speed = 1;
 
+	UPROPERTY(EditAnywhere, Category = "Paddle")
+	float MaxPos = 1;
+	UPROPERTY(EditAnywhere, Category = "Paddle")
+	float MinPos = 1;
+
 	float MoveValue = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -35,6 +40,7 @@ private:
 private:
 	void MoveInput(const FInputActionValue& Value);
 	void Move(float DeltaTime);
+	void StopInput(const FInputActionValue& Value);
 
 protected:
 	// Called when the game starts or when spawned

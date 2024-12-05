@@ -10,7 +10,7 @@
 // Sets default values
 ABKPalette::ABKPalette()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	StartPos = FVector(0, 0, 0);
@@ -65,6 +65,7 @@ void ABKPalette::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 		if (IA_Move)
 		{
 			EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ABKPalette::MoveInput);
+			EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &ABKPalette::StopInput);
 		}
 	}
 }
@@ -74,8 +75,15 @@ void ABKPalette::MoveInput(const FInputActionValue& Value)
 	MoveValue = Value.Get<float>();
 }
 
+void ABKPalette::StopInput(const FInputActionValue& Value)
+{
+	MoveValue = 0;
+}
+
 void ABKPalette::Move(float DeltaTime)
 {
-	FVector Movement = MoveValue * Speed * DeltaTime * FVector(0,1,0);
-	Visu->SetWorldLocation(Visu->GetComponentLocation() + Movement);
+	FVector Movement = MoveValue * Speed * DeltaTime * FVector(0, 1, 0);
+	FVector ClampedPos = Visu->GetComponentLocation() + Movement;
+	ClampedPos = FVector(ClampedPos.X, FMath::Clamp(ClampedPos.Y, MinPos, MaxPos), ClampedPos.Z);
+	Visu->SetWorldLocation(ClampedPos);
 }

@@ -95,6 +95,8 @@ void ABKBall::CollisionDetection(float DeltaTime)
 
 			if (ActorBounds.Intersect(BallBounds))
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Debug Message: Current Collision is %s"), *Actor->GetName());
+
 				FVector ClosestPoint = ActorBounds.GetClosestPointTo(CurrentPosition);
 				FVector ColDir = (CurrentPosition - ClosestPoint).GetSafeNormal();
 				NormalCollision += ColDir;
